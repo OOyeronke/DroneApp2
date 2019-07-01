@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TextActivity">
+
+
+    <FrameLayout
+        android:id="@+id/videoControlsFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="505dp"
+            android:layout_height="320dp" />
+
+        <LinearLayout
+            android:layout_width="410dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/CameraData"
+                android:layout_width="wrap_content"
+                android:layout_height="37dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/camera_data"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/Teleoperation"
+                app:layout_constraintEnd_toStartOf="@+id/videoControlsFrame"
+                app:layout_constraintHorizontal_bias="0.666"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ButtonStyle,SmallSp" />
+
+            <Button
+                android:id="@+id/OdometryData"
+                android:layout_width="wrap_content"
+                android:layout_height="37dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/odometry_data"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/videoControlsFrame"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Text"
+                tools:ignore="ButtonStyle,SmallSp" />
+
+            <Button
+                android:id="@+id/WindDirection"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:text="@string/wind_direction"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ButtonStyle,SmallSp" />
+
+            <Button
+                android:id="@+id/SaveVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="37dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/save_video"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
+                app:layout_constraintTop_toBottomOf="@+id/Main_Menu"
+                tools:ignore="ButtonStyle,SmallSp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/TeleOperation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/go_right" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/go_left" />
+
+            <Button
+                android:layout_width="102dp"
+                android:layout_height="wrap_content"
+                android:text="@string/hover" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/Teleoperation"
+        android:layout_width="71dp"
+        android:layout_height="63dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/tele_operation"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/Text"
+        app:layout_constraintEnd_toStartOf="@+id/videoControlsFrame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SmallSp" />
+
+    <Button
+        android:id="@+id/Text"
+        android:layout_width="71dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="96dp"
+        android:text="@string/waypoint"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/videoControlsFrame"
+        app:layout_constraintHorizontal_bias="0.375"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="SmallSp" />
+
+    <Button
+        android:id="@+id/Speech"
+        android:layout_width="71dp"
+        android:layout_height="69dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/speech"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/Main_Menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.368"
+        app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.496" />
+
+    <Button
+        android:id="@+id/Main_Menu"
+        android:layout_width="69dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="96dp"
+        android:text="@string/main_menu"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
+        tools:ignore="SmallSp" />
+
+
+</android.support.constraint.ConstraintLayout>
