@@ -24,9 +24,9 @@
 
         <VideoView
             android:id="@+id/videoView"
-            android:layout_marginBottom="20dp"
             android:layout_width="505dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,6 +47,7 @@
                 android:textAllCaps="false"
                 android:textSize="12sp"
                 android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
                 app:layout_constraintBottom_toTopOf="@+id/Teleoperation"
                 app:layout_constraintEnd_toStartOf="@+id/videoControlsFrame"
                 app:layout_constraintHorizontal_bias="0.666"
@@ -67,6 +68,7 @@
                 android:textAllCaps="false"
                 android:textSize="12sp"
                 android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/videoControlsFrame"
                 app:layout_constraintStart_toStartOf="parent"
@@ -85,6 +87,7 @@
                 android:textAllCaps="false"
                 android:textSize="12sp"
                 android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
                 app:layout_constraintTop_toTopOf="parent"
@@ -103,6 +106,7 @@
                 android:textAllCaps="false"
                 android:textSize="12sp"
                 android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
@@ -115,8 +119,8 @@
             android:id="@+id/TeleOperation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:layout_gravity="bottom"
+            android:layout_marginBottom="16dp"
             android:orientation="vertical">
 
             <Button
@@ -130,19 +134,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/land" />
+
             <Button
                 android:id="@+id/Stop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/stop"/>
+                android:text="@string/stop" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:layout_gravity="bottom|end"
+            android:layout_marginBottom="16dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -162,37 +167,37 @@
 
             <LinearLayout
                 android:id="@+id/TeleButton1"
-                android:layout_margin="-5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="-5dp"
                 android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/imageButtonLeft"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_arrow_left"/>
+                    android:src="@drawable/ic_arrow_left" />
 
                 <ImageButton
                     android:id="@+id/imageButtonMiddle"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:visibility="invisible"/>
+                    android:visibility="invisible" />
 
                 <ImageButton
                     android:id="@+id/imageButtonRight"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_arrow_right"
-                    android:layout_gravity="bottom" />
+                    android:layout_gravity="bottom"
+                    android:src="@drawable/ic_arrow_right" />
             </LinearLayout>
 
             <ImageButton
                 android:id="@+id/imageButtonDown"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_arrow_down"
-                android:layout_gravity="bottom|center_horizontal" />
+                android:layout_gravity="bottom|center_horizontal"
+                android:src="@drawable/ic_arrow_down" />
 
 
         </LinearLayout>

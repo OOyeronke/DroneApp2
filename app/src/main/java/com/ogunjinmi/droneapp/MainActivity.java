@@ -16,25 +16,137 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ogunjinmi.droneapp.model.GoLeftResponse;
+import com.ogunjinmi.droneapp.model.GoRightResponse;
+import com.ogunjinmi.droneapp.model.HoverResponse;
+import com.ogunjinmi.droneapp.model.LandResponse;
+import com.ogunjinmi.droneapp.model.SpeechResponse;
+import com.ogunjinmi.droneapp.model.StopResponse;
+import com.ogunjinmi.droneapp.model.TextResponse;
+import com.ogunjinmi.droneapp.services.MessageService;
+import com.ogunjinmi.droneapp.services.ServiceBuilder;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import static com.ogunjinmi.droneapp.Utilities.verifyInputCommand;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REQ_CODE_SPEECH_INPUT = 12;
     LinearLayout TeleOp, TeleOp1, TeleOp2;
-    Button teleoperationButton, waypointButton, sensorButton, mainMenuButton;
+    Button teleoperationButton, waypointButton, sensorButton, mainMenuButton, stopButton, landButton, takeOffButton;
     ImageButton imageButtonUp, imageButtonDown, imageButtonLeft, imageButtonRight;
     String inputCommand = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MessageService textService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<TextResponse> text = textService.getText();
+
+
+        text.enqueue(new Callback<TextResponse>() {
+            @Override
+            public void onResponse(Call<TextResponse> text, Response<TextResponse> response) {
+                //if(response.isSuccessful()){
+
+                //}
+                ((Button) findViewById(R.id.Text)).setText("Request Sent Successfully");
+            }
+
+            @Override
+            public void onFailure(Call<TextResponse> text, Throwable t) {
+                ((Button) findViewById(R.id.Text)).setText("Request Failed");
+
+            }
+        });
+
+        MessageService SpeechService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<SpeechResponse> speech = SpeechService.getSpeech();
+
+
+        speech.enqueue(new Callback<SpeechResponse>() {
+            @Override
+            public void onResponse(Call<SpeechResponse> speech, Response<SpeechResponse> response) {
+
+                ((Button) findViewById(R.id.Speech)).setText("Request Sent Successfully");
+            }
+
+            @Override
+            public void onFailure(Call<SpeechResponse> speech, Throwable t) {
+                ((Button) findViewById(R.id.Speech)).setText("Request Failed");
+
+            }
+        });
+
+        MessageService LandService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<LandResponse> land = LandService.getLand();
+
+
+        land.enqueue(new Callback<LandResponse>() {
+            @Override
+            public void onResponse(Call<LandResponse> land, Response<LandResponse> response) {
+
+                ((Button) findViewById(R.id.Land)).setText("Request Sent Successfully");
+            }
+
+            @Override
+            public void onFailure(Call<LandResponse> land, Throwable t) {
+                ((Button) findViewById(R.id.Land)).setText("Request Failed");
+
+            }
+        });
+        MessageService HoverService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<HoverResponse> hover = HoverService.getHover();
+
+
+        hover.enqueue(new Callback<HoverResponse>() {
+            @Override
+            public void onResponse(Call<HoverResponse> hover, Response<HoverResponse> response) {
+
+                ((Button) findViewById(R.id.TakeOff)).setText("Request Sent Successfully");
+            }
+
+            @Override
+            public void onFailure(Call<HoverResponse> call, Throwable t) {
+                ((Button) findViewById(R.id.TakeOff)).setText("Request Failed");
+
+            }
+        });
+
+
+        MessageService StopService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<StopResponse> stop = StopService.getStop();
+
+
+        stop.enqueue(new Callback<StopResponse>() {
+            @Override
+            public void onResponse(Call<StopResponse> stop, Response<StopResponse> response) {
+                //if(response.isSuccessful()){
+
+                //}
+                ((TextView) findViewById(R.id.Text)).setText("Request Sent Successfully");
+            }
+
+            @Override
+            public void onFailure(Call<StopResponse> call, Throwable t) {
+                ((TextView) findViewById(R.id.Text)).setText("Request Failed");
+
+            }
+        });
 
         TeleOp = findViewById(R.id.TeleOperation);
         TeleOp1 = findViewById(R.id.TeleButton1);
@@ -53,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View v) {
                         //TODO: Handle button functionality when text is "Text"
                         openTextInputLayout();
+
                     }
                 });
                 sensorButton.setText(getString(R.string.speech));
@@ -62,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(View v) {
                         //TODO: Handle button functionality when text is "Speech"
                         promptSpeechInput();
+
                     }
                 });
             }
@@ -80,12 +194,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageButtonRight.setOnClickListener(this);
         imageButtonUp= findViewById(R.id.imageButtonUp);
         imageButtonUp.setOnClickListener(this);
+        stopButton= findViewById(R.id.Stop);
+        stopButton.setOnClickListener(this);
+        landButton= findViewById(R.id.Land);
+        landButton.setOnClickListener(this);
+        takeOffButton= findViewById(R.id.TakeOff);
+        takeOffButton.setOnClickListener(this);
         TeleOp.setVisibility(View.GONE);
         TeleOp1.setVisibility(View.GONE);
         TeleOp2.setVisibility(View.GONE);
         imageButtonDown.setVisibility(View.GONE);
+        stopButton.setVisibility(View.GONE);
+        landButton.setVisibility(View.GONE);
+        takeOffButton.setVisibility(View.GONE);
+
 
     }
+
 
     @Override
     public void onClick(View v) {
@@ -116,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     private void promptSpeechInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -131,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.LENGTH_SHORT).show();
         }
     }
-
     private void openTextInputLayout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter a Command for the drone");
@@ -150,6 +275,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(verifyInputCommand){
                     Toast.makeText(MainActivity.this, "Command is valid.", Toast.LENGTH_LONG).show();
                 }
+                else {
+                    Toast.makeText(MainActivity.this, "Command invalid.", Toast.LENGTH_LONG).show();
+                                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -174,9 +302,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 inputCommand = result.get(0);
                 Log.e("MainActivity", "result is " + inputCommand);
                 boolean verifyInputCommand = verifyInputCommand(inputCommand);
-                if(verifyInputCommand){
+                if(verifyInputCommand) {
                     Toast.makeText(this, "Command is valid.", Toast.LENGTH_LONG).show();
                 }
+                else{
+                    Toast.makeText(this,  "Command invalid.", Toast.LENGTH_LONG).show();
+                    }
+
             }
         }
 
