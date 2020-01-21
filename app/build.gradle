@@ -42,4 +42,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.2.2'
 
     implementation 'com.microsoft.signalr:signalr:1.0.0'
+
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
+    implementation 'org.conscrypt:conscrypt-android:2.2.1'
 }

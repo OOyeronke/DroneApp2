@@ -34,6 +34,6 @@ public class SplashedActivity extends AppCompatActivity {
 
                 Log.d("MainActivity:", "onCreate: waiting 5 seconds for MainActivity... loading PrimaryActivity.class");
             }
-        }, 5000 );
+        }, 500 );
     }
 }

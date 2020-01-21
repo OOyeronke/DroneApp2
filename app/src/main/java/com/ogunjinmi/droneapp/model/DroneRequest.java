@@ -1,5 +1,9 @@
 package com.ogunjinmi.droneapp.model;
 
+import android.support.annotation.NonNull;
+
+import com.google.gson.Gson;
+
 public class DroneRequest {
     private String item;
     private String command;
@@ -23,5 +27,11 @@ public class DroneRequest {
 
     public void setCommand(String command) {
         this.command = command;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }

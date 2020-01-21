@@ -12,6 +12,7 @@ import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 import com.microsoft.signalr.OnClosedCallback;
 import com.ogunjinmi.droneapp.Utilities;
+import com.ogunjinmi.droneapp.model.DroneRequest;
 
 
 public class SignalRService extends Service {
@@ -75,11 +76,8 @@ public class SignalRService extends Service {
 
                 .build();
 
-        mHubConnection.onClosed(new OnClosedCallback() {
-            @Override
-            public void invoke(Exception exception) {
+        mHubConnection.onClosed(exception -> {
 
-            }
         });
 
         mHubConnection.on("Command", new Action() {
@@ -90,6 +88,7 @@ public class SignalRService extends Service {
         });
 
         mHubConnection.start();
+        mHubConnection.invoke(DroneRequest.class, "SendCommand", "");
 
         String HELLO_MSG = "Hello from Android!";
         sendMessage(HELLO_MSG);

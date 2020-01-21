@@ -1,5 +1,6 @@
 package com.ogunjinmi.droneapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -17,16 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.microsoft.signalr.HubConnection;
+import com.microsoft.signalr.HubConnectionBuilder;
 import com.ogunjinmi.droneapp.model.DroneRequest;
 import com.ogunjinmi.droneapp.model.LandResponse;
-import com.ogunjinmi.droneapp.model.ReviewResponse;
-import com.ogunjinmi.droneapp.model.StartResponse;
-import com.ogunjinmi.droneapp.model.Stop2Response;
-import com.ogunjinmi.droneapp.model.StopResponse;
-import com.ogunjinmi.droneapp.model.TextResponse;
 import com.ogunjinmi.droneapp.services.MessageService;
 import com.ogunjinmi.droneapp.services.ServiceBuilder;
 
@@ -47,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button teleoperationButton, datastreamingButton, mainMenuButton, stopButton, landButton, takeOffButton, startButton, stop2Button, reviewButton;
     ImageButton imageButtonUp, imageButtonDown, imageButtonLeft, imageButtonRight;
     String inputCommand = "";
+    private HubConnection mCommandHubConnection;
+    private HubConnection mDataHubConnection;
 
 
     @Override
@@ -54,151 +53,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MessageService textService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<TextResponse> text = textService.getText();
-
-
-        text.enqueue(new Callback<TextResponse>() {
-            @Override
-            public void onResponse(Call<TextResponse> text, Response<TextResponse> response) {
-                if(response.isSuccessful()){
-
-                    ((Button) findViewById(R.id.DataStreamingBtn)).setText("Request Failed");
-
-                }
-                Log.e("main", "Request Sent Successfully");
-            }
-
-            @Override
-            public void onFailure(Call<TextResponse> text, Throwable t) {
-
-            }
-        });
-
-
-        MessageService Stop2Service = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<Stop2Response> stop2 = Stop2Service.getStop2();
-
-
-        stop2.enqueue(new Callback<Stop2Response>() {
-            @Override
-            public void onResponse(Call<Stop2Response> stop2, Response<Stop2Response> response) {
-                //if(response.isSuccessful()){
-
-                //}
-                Log.e("main", "Request Sent Successfully");
-            }
-
-            @Override
-            public void onFailure(Call<Stop2Response> call, Throwable t) {
-                ((TextView) findViewById(R.id.StopStreamingBtn)).setText("Request Failed");
-
-            }
-        });
-
-        MessageService StartService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<StartResponse> start = StartService.getStart();
-
-
-        start.enqueue(new Callback<StartResponse>() {
-            @Override
-            public void onResponse(Call<StartResponse> start, Response<StartResponse> response) {
-                //if(response.isSuccessful()){
-
-                //}
-                Log.e("main", "Request Sent Successfully");
-            }
-
-            @Override
-            public void onFailure(Call<StartResponse> call, Throwable t) {
-                ((TextView) findViewById(R.id.StartStreamingBtn)).setText("Request Failed");
-
-            }
-        });
-
-        MessageService ReviewService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<ReviewResponse> review = ReviewService.getReview();
-
-
-        review.enqueue(new Callback<ReviewResponse>() {
-            @Override
-            public void onResponse(Call<ReviewResponse> review, Response<ReviewResponse> response) {
-                //if(response.isSuccessful()){
-
-                //}
-                Log.e("main", "Request Sent Successfully");
-            }
-
-            @Override
-            public void onFailure(Call<ReviewResponse> call, Throwable t) {
-                ((TextView) findViewById(R.id.ReviewBtn)).setText("Request Failed");
-
-            }
-        });
+        startSignalR();
+        startSignalRForData();
 
 
         TeleOp = findViewById(R.id.TeleOperation);
         TeleOp1 = findViewById(R.id.TeleButton1);
         TeleOp2 = findViewById(R.id.TeleButton2);
         teleoperationButton = findViewById(R.id.TeleOperationBtn);
-        teleoperationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TeleOp.setVisibility(View.VISIBLE);
-                TeleOp1.setVisibility(View.VISIBLE);
-                TeleOp2.setVisibility(View.VISIBLE);
-                imageButtonDown.setVisibility(View.VISIBLE);
-                datastreamingButton.setText(getString(R.string.text));
-                datastreamingButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //TODO: Handle button functionality when text is "Text"
-                        openTextInputLayout();
+        teleoperationButton.setOnClickListener(v -> {
+            TeleOp.setVisibility(View.VISIBLE);
+            TeleOp1.setVisibility(View.VISIBLE);
+            TeleOp2.setVisibility(View.VISIBLE);
+            imageButtonDown.setVisibility(View.VISIBLE);
+            takeOffButton.setVisibility(View.VISIBLE);
+            landButton.setVisibility(View.VISIBLE);
+            stopButton.setVisibility(View.VISIBLE);
+            datastreamingButton.setText(getString(R.string.text));
+            datastreamingButton.setOnClickListener(v1 -> {
+                //TODO: Handle button functionality when text is "Text"
+                openTextInputLayout();
 
-                    }
-                });
-              //  sensorButton.setText(getString(R.string.speech));
-                //sensorButton.setOnClickListener(new View.OnClickListener() {
+            });
+            //  sensorButton.setText(getString(R.string.speech));
+            //sensorButton.setOnClickListener(new View.OnClickListener() {
 
-                    //  @Override
-                   // public void onClick(View v) {
-                        //TODO: Handle button functionality when text is "Speech"
-                  // promptSpeechInput();
+            //  @Override
+            // public void onClick(View v) {
+            //TODO: Handle button functionality when text is "Speech"
+            // promptSpeechInput();
 
-      //             }
-        //        });
+            //             }
+            //        });
 
-            }
         });
 
 
-        datastreamingButton= findViewById(R.id.DataStreamingBtn);
-        datastreamingButton.setOnClickListener(new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
+        datastreamingButton = findViewById(R.id.DataStreamingBtn);
+        datastreamingButton.setOnClickListener(v -> {
             startButton.setVisibility(View.VISIBLE);
             startButton.setClickable(false);
             stop2Button.setVisibility(View.VISIBLE);
             reviewButton.setVisibility(View.VISIBLE);
-        }
-              });
+        });
 
         mainMenuButton = findViewById(R.id.MainMenuBtn);
         mainMenuButton.setOnClickListener(this);
         imageButtonDown = findViewById(R.id.DownBtn);
         imageButtonDown.setOnClickListener(this);
-        imageButtonLeft  = findViewById(R.id.LeftBtn);
+        imageButtonLeft = findViewById(R.id.LeftBtn);
         imageButtonLeft.setOnClickListener(this);
         imageButtonRight = findViewById(R.id.RightBtn);
         imageButtonRight.setOnClickListener(this);
-        imageButtonUp= findViewById(R.id.UpBtn);
+        imageButtonUp = findViewById(R.id.UpBtn);
         imageButtonUp.setOnClickListener(this);
-        stopButton= findViewById(R.id.StopBtn);
+        stopButton = findViewById(R.id.StopBtn);
         stopButton.setOnClickListener(this);
-        landButton= findViewById(R.id.LandBtn);
+        landButton = findViewById(R.id.LandBtn);
         landButton.setOnClickListener(this);
-        takeOffButton= findViewById(R.id.TakeOffBtn);
+        takeOffButton = findViewById(R.id.TakeOffBtn);
         takeOffButton.setOnClickListener(this);
         startButton = findViewById(R.id.StartStreamingBtn);
         startButton.setOnClickListener(this);
@@ -217,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startButton.setVisibility(View.GONE);
         stop2Button.setVisibility(View.GONE);
         reviewButton.setVisibility(View.GONE);
-            }
+    }
 
     @Override
     public void onClick(View v) {
@@ -297,75 +210,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void doStop() {
         DroneRequest stopDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_COMMAND);
 
-        makeRequest(stopDroneRequest);
+        sendCommand(stopDroneRequest.toString());
     }
 
-    private void makeRequest(DroneRequest droneRequest) {
-        MessageService StopService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<StopResponse> stop = StopService.getStop();
-
-        String successMessage = getString(R.string.success_text_message,
-                droneRequest.getCommand(), droneRequest.getItem());
-        String failedMessage = getString(R.string.failure_text_message,
-                droneRequest.getCommand(), droneRequest.getItem());
-
-        stop.enqueue(new Callback<StopResponse>() {
-            @Override
-            public void onResponse(Call<StopResponse> stop, Response<StopResponse> response) {
-
-                Log.e("main", "Request Sent Successfully");
-                Snackbar.make(findViewById(R.id.videoControlsFrame),
-                        successMessage,
-                        Snackbar.LENGTH_LONG
-                ).show();
-            }
-
-            @Override
-            public void onFailure(Call<StopResponse> stop, Throwable t) {
-                Snackbar.make(findViewById(R.id.videoControlsFrame),
-                        failedMessage,
-                        Snackbar.LENGTH_LONG
-                ).show();
-
-            }
-        });
-    }
 
     private void doStart() {
         DroneRequest startDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_COMMAND);
 
         makeRequest(startDroneRequest);
-    }
-
-    private void makeRequest(DroneRequest droneRequest) {
-        MessageService StartService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<StartResponse> start = StartService.getStart();
-
-        String successMessage = getString(R.string.success_text_message,
-                droneRequest.getCommand(), droneRequest.getItem());
-        String failedMessage = getString(R.string.failure_text_message,
-                droneRequest.getCommand(), droneRequest.getItem());
-
-        start.enqueue(new Callback<StartResponse>() {
-            @Override
-            public void onResponse(Call<StartResponse> start, Response<StartResponse> response) {
-
-                Log.e("main", "Request Sent Successfully");
-                Snackbar.make(findViewById(R.id.videoControlsFrame),
-                        successMessage,
-                        Snackbar.LENGTH_LONG
-                ).show();
-            }
-
-            @Override
-            public void onFailure(Call<StartResponse> start, Throwable t) {
-                Snackbar.make(findViewById(R.id.videoControlsFrame),
-                        failedMessage,
-                        Snackbar.LENGTH_LONG
-                ).show();
-
-            }
-        });
+        sendCommand(startDroneRequest.toString());
     }
 
 
@@ -384,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.LENGTH_SHORT).show();
         }
     }
+
     private void openTextInputLayout() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter a Command for the drone");
@@ -394,25 +248,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                inputCommand = input.getText().toString();
-                boolean verifyInputCommand = verifyInputCommand(inputCommand);
-                if(verifyInputCommand){
-                    Toast.makeText(MainActivity.this, "Command is valid.", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(MainActivity.this, "Command invalid.", Toast.LENGTH_LONG).show();
-                                }
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            inputCommand = input.getText().toString();
+            boolean verifyInputCommand = verifyInputCommand(inputCommand);
+            if (verifyInputCommand) {
+                Toast.makeText(MainActivity.this, "Command is valid.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(MainActivity.this, "Command invalid.", Toast.LENGTH_LONG).show();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
 
@@ -429,16 +274,82 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 inputCommand = result.get(0);
                 Log.e("MainActivity", "result is " + inputCommand);
                 boolean verifyInputCommand = verifyInputCommand(inputCommand);
-                if(verifyInputCommand) {
+                if (verifyInputCommand) {
                     Toast.makeText(this, "Command is valid.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Command invalid.", Toast.LENGTH_LONG).show();
                 }
-                else{
-                    Toast.makeText(this,  "Command invalid.", Toast.LENGTH_LONG).show();
-                    }
 
             }
         }
-
     }
+
+    @SuppressLint("CheckResult")
+    private void startSignalR() {
+
+        String serverUrl = Utilities.BASE_URL + "commandHub";
+
+        mCommandHubConnection = HubConnectionBuilder.create(serverUrl)
+                .build();
+
+        mCommandHubConnection.onClosed(exception -> {
+            Log.e("onClosed:", "Command");
+            Log.e("onClosed", "Command "+ exception.getMessage());
+        });
+
+        mCommandHubConnection.on("Command", () -> {
+            System.out.println("Received New Message: Command");
+            System.out.println("New Message: Command");
+        });
+
+
+        mCommandHubConnection.start().doOnComplete(() -> {
+            System.out.println("doOnComplete: Command");
+            mCommandHubConnection.invoke(Void.class, "GetConnectionId");
+            DroneRequest stopDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_COMMAND);
+            String HELLO_MSG = stopDroneRequest.toString();
+            sendCommand(HELLO_MSG);
+
+        });
+    }
+
+    @SuppressLint("CheckResult")
+    private void startSignalRForData() {
+
+        String serverUrl = Utilities.BASE_URL + "deviceHub";
+
+        mDataHubConnection = HubConnectionBuilder.create(serverUrl)
+                .build();
+
+        mDataHubConnection.onClosed(exception -> {
+            Log.e("onClosed:", "Command");
+            Log.e("onClosed", "Command "+ exception.getMessage());
+        });
+
+        mDataHubConnection.on("ImageMessage", () -> {
+            System.out.println("Received New Message: Command");
+            System.out.println("New Message: Command");
+        });
+
+
+        mDataHubConnection.on("VideoMessage", () -> {
+            System.out.println("Received New Message: Command");
+            System.out.println("New Message: Command");
+        });
+
+
+        mDataHubConnection.start().doOnComplete(() -> {
+            System.out.println("doOnComplete: Command");
+            mDataHubConnection.invoke(Void.class, "GetConnectionId");
+
+
+        });
+    }
+
+    public void sendCommand(String message) {
+        String SERVER_METHOD_SEND = "SendCommand";
+        mCommandHubConnection.send(SERVER_METHOD_SEND, message);
+    }
+
 }
 
