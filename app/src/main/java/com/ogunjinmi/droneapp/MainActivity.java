@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -19,18 +19,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ogunjinmi.droneapp.model.GoLeftResponse;
-import com.ogunjinmi.droneapp.model.GoRightResponse;
 import com.ogunjinmi.droneapp.model.HoverResponse;
 import com.ogunjinmi.droneapp.model.LandResponse;
-import com.ogunjinmi.droneapp.model.SpeechResponse;
+import com.ogunjinmi.droneapp.model.ReviewResponse;
+import com.ogunjinmi.droneapp.model.StartResponse;
+import com.ogunjinmi.droneapp.model.Stop2Response;
 import com.ogunjinmi.droneapp.model.StopResponse;
 import com.ogunjinmi.droneapp.model.TextResponse;
 import com.ogunjinmi.droneapp.services.MessageService;
 import com.ogunjinmi.droneapp.services.ServiceBuilder;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final int REQ_CODE_SPEECH_INPUT = 12;
     LinearLayout TeleOp, TeleOp1, TeleOp2;
-    Button teleoperationButton, waypointButton, sensorButton, mainMenuButton, stopButton, landButton, takeOffButton;
+    Button teleoperationButton, datastreamingButton, mainMenuButton, stopButton, landButton, takeOffButton, startButton, stop2Button, reviewButton;
     ImageButton imageButtonUp, imageButtonDown, imageButtonLeft, imageButtonRight;
     String inputCommand = "";
 
@@ -64,30 +63,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //if(response.isSuccessful()){
 
                 //}
-                ((Button) findViewById(R.id.Text)).setText("Request Sent Successfully");
+                Log.e("main", "Request Sent Successfully");
             }
 
             @Override
             public void onFailure(Call<TextResponse> text, Throwable t) {
-                ((Button) findViewById(R.id.Text)).setText("Request Failed");
-
-            }
-        });
-
-        MessageService SpeechService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<SpeechResponse> speech = SpeechService.getSpeech();
-
-
-        speech.enqueue(new Callback<SpeechResponse>() {
-            @Override
-            public void onResponse(Call<SpeechResponse> speech, Response<SpeechResponse> response) {
-
-                ((Button) findViewById(R.id.Speech)).setText("Request Sent Successfully");
-            }
-
-            @Override
-            public void onFailure(Call<SpeechResponse> speech, Throwable t) {
-                ((Button) findViewById(R.id.Speech)).setText("Request Failed");
+                ((Button) findViewById(R.id.DataStreamingBtn)).setText("Request Failed");
 
             }
         });
@@ -100,12 +81,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(Call<LandResponse> land, Response<LandResponse> response) {
 
-                ((Button) findViewById(R.id.Land)).setText("Request Sent Successfully");
+                Log.e("main", "Request Sent Successfully");
             }
 
             @Override
             public void onFailure(Call<LandResponse> land, Throwable t) {
-                ((Button) findViewById(R.id.Land)).setText("Request Failed");
+                ((Button) findViewById(R.id.LandBtn)).setText("Request Failed");
 
             }
         });
@@ -117,12 +98,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(Call<HoverResponse> hover, Response<HoverResponse> response) {
 
-                ((Button) findViewById(R.id.TakeOff)).setText("Request Sent Successfully");
+                Log.e("main", "Request Sent Successfully");
             }
 
             @Override
             public void onFailure(Call<HoverResponse> call, Throwable t) {
-                ((Button) findViewById(R.id.TakeOff)).setText("Request Failed");
+                ((Button) findViewById(R.id.TakeOffBtn)).setText("Request Failed");
 
             }
         });
@@ -138,20 +119,81 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //if(response.isSuccessful()){
 
                 //}
-                ((TextView) findViewById(R.id.Text)).setText("Request Sent Successfully");
+                Log.e("main", "Request Sent Successfully");
             }
 
             @Override
             public void onFailure(Call<StopResponse> call, Throwable t) {
-                ((TextView) findViewById(R.id.Text)).setText("Request Failed");
+                ((TextView) findViewById(R.id.StopBtn)).setText("Request Failed");
 
             }
         });
 
+        MessageService Stop2Service = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<Stop2Response> stop2 = Stop2Service.getStop2();
+
+
+        stop2.enqueue(new Callback<Stop2Response>() {
+            @Override
+            public void onResponse(Call<Stop2Response> stop2, Response<Stop2Response> response) {
+                //if(response.isSuccessful()){
+
+                //}
+                Log.e("main", "Request Sent Successfully");
+            }
+
+            @Override
+            public void onFailure(Call<Stop2Response> call, Throwable t) {
+                ((TextView) findViewById(R.id.StopStreamingBtn)).setText("Request Failed");
+
+            }
+        });
+
+        MessageService StartService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<StartResponse> start = StartService.getStart();
+
+
+        start.enqueue(new Callback<StartResponse>() {
+            @Override
+            public void onResponse(Call<StartResponse> start, Response<StartResponse> response) {
+                //if(response.isSuccessful()){
+
+                //}
+                Log.e("main", "Request Sent Successfully");
+            }
+
+            @Override
+            public void onFailure(Call<StartResponse> call, Throwable t) {
+                ((TextView) findViewById(R.id.StartStreamingBtn)).setText("Request Failed");
+
+            }
+        });
+
+        MessageService ReviewService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<ReviewResponse> review = ReviewService.getReview();
+
+
+        review.enqueue(new Callback<ReviewResponse>() {
+            @Override
+            public void onResponse(Call<ReviewResponse> review, Response<ReviewResponse> response) {
+                //if(response.isSuccessful()){
+
+                //}
+                Log.e("main", "Request Sent Successfully");
+            }
+
+            @Override
+            public void onFailure(Call<ReviewResponse> call, Throwable t) {
+                ((TextView) findViewById(R.id.ReviewBtn)).setText("Request Failed");
+
+            }
+        });
+
+
         TeleOp = findViewById(R.id.TeleOperation);
         TeleOp1 = findViewById(R.id.TeleButton1);
         TeleOp2 = findViewById(R.id.TeleButton2);
-        teleoperationButton = findViewById(R.id.Teleoperation);
+        teleoperationButton = findViewById(R.id.TeleOperationBtn);
         teleoperationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,8 +201,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 TeleOp1.setVisibility(View.VISIBLE);
                 TeleOp2.setVisibility(View.VISIBLE);
                 imageButtonDown.setVisibility(View.VISIBLE);
-                waypointButton.setText(getString(R.string.text));
-                waypointButton.setOnClickListener(new View.OnClickListener() {
+                datastreamingButton.setText(getString(R.string.text));
+                datastreamingButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //TODO: Handle button functionality when text is "Text"
@@ -168,38 +210,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     }
                 });
-                sensorButton.setText(getString(R.string.speech));
-                sensorButton.setOnClickListener(new View.OnClickListener() {
+              //  sensorButton.setText(getString(R.string.speech));
+                //sensorButton.setOnClickListener(new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
+                    //  @Override
+                   // public void onClick(View v) {
                         //TODO: Handle button functionality when text is "Speech"
-                        promptSpeechInput();
+                  // promptSpeechInput();
 
-                    }
-                });
+      //             }
+        //        });
+
             }
         });
-        waypointButton = findViewById(R.id.Waypoint);
-        waypointButton.setOnClickListener(this);
-        sensorButton = findViewById(R.id.SensorData);
-        sensorButton.setOnClickListener(this);
-        mainMenuButton = findViewById(R.id.Main_Menu);
+
+
+        datastreamingButton= findViewById(R.id.DataStreamingBtn);
+        datastreamingButton.setOnClickListener(new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            startButton.setVisibility(View.VISIBLE);
+            startButton.setClickable(false);
+            stop2Button.setVisibility(View.VISIBLE);
+            reviewButton.setVisibility(View.VISIBLE);
+        }
+              });
+
+        mainMenuButton = findViewById(R.id.MainMenuBtn);
         mainMenuButton.setOnClickListener(this);
-        imageButtonDown = findViewById(R.id.imageButtonDown);
+        imageButtonDown = findViewById(R.id.DownBtn);
         imageButtonDown.setOnClickListener(this);
-        imageButtonLeft  = findViewById(R.id.imageButtonLeft);
+        imageButtonLeft  = findViewById(R.id.LeftBtn);
         imageButtonLeft.setOnClickListener(this);
-        imageButtonRight = findViewById(R.id.imageButtonRight);
+        imageButtonRight = findViewById(R.id.RightBtn);
         imageButtonRight.setOnClickListener(this);
-        imageButtonUp= findViewById(R.id.imageButtonUp);
+        imageButtonUp= findViewById(R.id.UpBtn);
         imageButtonUp.setOnClickListener(this);
-        stopButton= findViewById(R.id.Stop);
+        stopButton= findViewById(R.id.StopBtn);
         stopButton.setOnClickListener(this);
-        landButton= findViewById(R.id.Land);
+        landButton= findViewById(R.id.LandBtn);
         landButton.setOnClickListener(this);
-        takeOffButton= findViewById(R.id.TakeOff);
+        takeOffButton= findViewById(R.id.TakeOffBtn);
         takeOffButton.setOnClickListener(this);
+        startButton = findViewById(R.id.StartStreamingBtn);
+        startButton.setOnClickListener(this);
+        startButton.setClickable(true);
+        stop2Button = findViewById(R.id.StopStreamingBtn);
+        stop2Button.setOnClickListener(this);
+        reviewButton = findViewById(R.id.ReviewBtn);
+        reviewButton.setOnClickListener(this);
         TeleOp.setVisibility(View.GONE);
         TeleOp1.setVisibility(View.GONE);
         TeleOp2.setVisibility(View.GONE);
@@ -207,34 +267,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopButton.setVisibility(View.GONE);
         landButton.setVisibility(View.GONE);
         takeOffButton.setVisibility(View.GONE);
-
-
-    }
-
+        startButton.setVisibility(View.GONE);
+        stop2Button.setVisibility(View.GONE);
+        reviewButton.setVisibility(View.GONE);
+            }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.imageButtonDown: {
+            case R.id.DownBtn: {
 
             }
             break;
-            case R.id.Teleoperation: {
+            case R.id.TeleOperationBtn: {
                 //TODO show button controls for controlling the drone
 
                 //startActivity(new Intent(MainActivity.this, TeleOperationActivity.class));
             }
 
             break;
-            case R.id.Waypoint: {
+            case R.id.DataStreamingBtn: {
                 startActivity(new Intent(MainActivity.this, WaypointActivity.class));
             }
+
             break;
-            case R.id.SensorData: {
-                startActivity(new Intent(MainActivity.this, Sensor_DataActivity.class));
-            }
-            break;
-            case R.id.Main_Menu: {
+            case R.id.MainMenuBtn: {
                 startActivity(new Intent(MainActivity.this, MainActivity.class));
             }
             break;

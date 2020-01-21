@@ -35,20 +35,21 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/CameraData"
+                android:id="@+id/StartStreamingBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="37dp"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="16dp"
-                android:text="@string/camera_data"
+                android:text="@string/start_streaming"
                 android:textAlignment="center"
                 android:textAllCaps="false"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="@color/colorPrimaryDark"
-                app:layout_constraintBottom_toTopOf="@+id/Teleoperation"
+                android:clickable="false"
+                app:layout_constraintBottom_toTopOf="@+id/TeleOperationBtn"
                 app:layout_constraintEnd_toStartOf="@+id/videoControlsFrame"
                 app:layout_constraintHorizontal_bias="0.666"
                 app:layout_constraintStart_toStartOf="parent"
@@ -56,19 +57,20 @@
                 tools:ignore="ButtonStyle,SmallSp" />
 
             <Button
-                android:id="@+id/OdometryData"
+                android:id="@+id/StopStreamingBtn"
                 android:layout_width="117dp"
                 android:layout_height="37dp"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="16dp"
-                android:text="@string/odometry_data"
+                android:text="@string/stop_streaming"
                 android:textAlignment="center"
                 android:textAllCaps="false"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="@color/colorPrimaryDark"
+                android:clickable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/videoControlsFrame"
                 app:layout_constraintStart_toStartOf="parent"
@@ -76,41 +78,22 @@
                 tools:ignore="ButtonStyle,SmallSp" />
 
             <Button
-                android:id="@+id/WindDirection"
+                android:id="@+id/ReviewBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="0dp"
-                android:text="@string/wind_direction"
+                android:text="@string/review_streaming"
                 android:textAlignment="center"
                 android:textAllCaps="false"
+                android:textColor="@color/colorPrimaryDark"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="@color/colorPrimaryDark"
+                android:clickable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ButtonStyle,SmallSp" />
-
-            <Button
-                android:id="@+id/SaveVideo"
-                android:layout_width="wrap_content"
-                android:layout_height="37dp"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginBottom="16dp"
-                android:text="@string/save_video"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimaryDark"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
-                app:layout_constraintTop_toBottomOf="@+id/Main_Menu"
                 tools:ignore="ButtonStyle,SmallSp" />
 
         </LinearLayout>
@@ -124,19 +107,19 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/TakeOff"
+                android:id="@+id/TakeOffBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/takeoff" />
 
             <Button
-                android:id="@+id/Land"
+                android:id="@+id/LandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/land" />
 
             <Button
-                android:id="@+id/Stop"
+                android:id="@+id/StopBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stop" />
@@ -158,7 +141,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/imageButtonUp"
+                    android:id="@+id/UpBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:gravity="center"
@@ -173,7 +156,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/imageButtonLeft"
+                    android:id="@+id/LeftBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_arrow_left" />
@@ -185,7 +168,7 @@
                     android:visibility="invisible" />
 
                 <ImageButton
-                    android:id="@+id/imageButtonRight"
+                    android:id="@+id/RightBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="bottom"
@@ -193,7 +176,7 @@
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/imageButtonDown"
+                android:id="@+id/DownBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="bottom|center_horizontal"
@@ -204,7 +187,7 @@
     </FrameLayout>
 
     <Button
-        android:id="@+id/Teleoperation"
+        android:id="@+id/TeleOperationBtn"
         android:layout_width="71dp"
         android:layout_height="63dp"
         android:layout_marginStart="16dp"
@@ -216,22 +199,22 @@
         android:textAllCaps="false"
         android:textSize="10sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/Waypoint"
+        app:layout_constraintBottom_toTopOf="@+id/DataStreamingBtn"
         app:layout_constraintEnd_toStartOf="@+id/videoControlsFrame"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.171"
-        tools:ignore="SmallSp" />
+        tools:ignore="SmallSp"/>
 
     <Button
-        android:id="@+id/Waypoint"
+        android:id="@+id/DataStreamingBtn"
         android:layout_width="71dp"
         android:layout_height="72dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="80dp"
-        android:text="@string/waypoint"
+        android:text="@string/data_streaming"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="10sp"
@@ -243,30 +226,11 @@
         tools:ignore="SmallSp" />
 
     <Button
-        android:id="@+id/SensorData"
-        android:layout_width="71dp"
-        android:layout_height="69dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/sensor_data"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/Main_Menu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.198" />
-
-    <Button
-        android:id="@+id/Main_Menu"
+        android:id="@+id/MainMenuBtn"
         android:layout_width="69dp"
         android:layout_height="65dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="104dp"
         android:text="@string/main_menu"
@@ -278,6 +242,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/videoControlsFrame"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.756"
         tools:ignore="SmallSp" />
 
 

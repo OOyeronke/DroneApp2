@@ -40,4 +40,30 @@
     <string name="speech_not_supported">This action is not supported.\\</string>
     <string name="takeoff">TakeOff</string>
     <string name="stop">stop</string>
+    <string name="title_activity_signin">Sign in</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email or Username</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in </string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="teleeoperation">TeleeOperation</string>
+    <string name="data_streaming">Data Streaming</string>
+    <string name="stop2">Stop</string>
+    <string name="review">Review</string>
+    <string name="start_streaming">start_streaming</string>
+    <string name="stop_streaming">stop_streaming</string>
+    <string name="review_streaming">review_streaming</string>
 </resources>
