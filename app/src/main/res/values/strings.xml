@@ -66,4 +66,6 @@
     <string name="start_streaming">start_streaming</string>
     <string name="stop_streaming">stop_streaming</string>
     <string name="review_streaming">review_streaming</string>
+    <string name="success_text_message">Request to %s the %s is successful</string>
+    <string name="failure_text_message">Request to %s the %s failed</string>
 </resources>

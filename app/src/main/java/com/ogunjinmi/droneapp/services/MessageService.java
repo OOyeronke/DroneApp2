@@ -1,5 +1,6 @@
 package com.ogunjinmi.droneapp.services;
 
+import com.ogunjinmi.droneapp.model.DroneRequest;
 import com.ogunjinmi.droneapp.model.GoLeftResponse;
 import com.ogunjinmi.droneapp.model.GoRightResponse;
 import com.ogunjinmi.droneapp.model.HoverResponse;
@@ -13,8 +14,13 @@ import com.ogunjinmi.droneapp.model.TextResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 public interface MessageService {
+
+    @POST("/command")
+    Call<LandResponse> sendCommand(DroneRequest droneRequest);
+
     @GET("/text")
     Call<TextResponse> getText();
 
@@ -44,4 +50,4 @@ public interface MessageService {
 
     @GET("/Review")
     Call<ReviewResponse> getReview();
-        }
+}

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -19,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ogunjinmi.droneapp.model.HoverResponse;
+import com.ogunjinmi.droneapp.model.DroneRequest;
 import com.ogunjinmi.droneapp.model.LandResponse;
 import com.ogunjinmi.droneapp.model.ReviewResponse;
 import com.ogunjinmi.droneapp.model.StartResponse;
@@ -60,74 +61,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         text.enqueue(new Callback<TextResponse>() {
             @Override
             public void onResponse(Call<TextResponse> text, Response<TextResponse> response) {
-                //if(response.isSuccessful()){
+                if(response.isSuccessful()){
 
-                //}
+                    ((Button) findViewById(R.id.DataStreamingBtn)).setText("Request Failed");
+
+                }
                 Log.e("main", "Request Sent Successfully");
             }
 
             @Override
             public void onFailure(Call<TextResponse> text, Throwable t) {
-                ((Button) findViewById(R.id.DataStreamingBtn)).setText("Request Failed");
 
             }
         });
 
-        MessageService LandService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<LandResponse> land = LandService.getLand();
-
-
-        land.enqueue(new Callback<LandResponse>() {
-            @Override
-            public void onResponse(Call<LandResponse> land, Response<LandResponse> response) {
-
-                Log.e("main", "Request Sent Successfully");
-            }
-
-            @Override
-            public void onFailure(Call<LandResponse> land, Throwable t) {
-                ((Button) findViewById(R.id.LandBtn)).setText("Request Failed");
-
-            }
-        });
-        MessageService HoverService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<HoverResponse> hover = HoverService.getHover();
-
-
-        hover.enqueue(new Callback<HoverResponse>() {
-            @Override
-            public void onResponse(Call<HoverResponse> hover, Response<HoverResponse> response) {
-
-                Log.e("main", "Request Sent Successfully");
-            }
-
-            @Override
-            public void onFailure(Call<HoverResponse> call, Throwable t) {
-                ((Button) findViewById(R.id.TakeOffBtn)).setText("Request Failed");
-
-            }
-        });
-
-
-        MessageService StopService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<StopResponse> stop = StopService.getStop();
-
-
-        stop.enqueue(new Callback<StopResponse>() {
-            @Override
-            public void onResponse(Call<StopResponse> stop, Response<StopResponse> response) {
-                //if(response.isSuccessful()){
-
-                //}
-                Log.e("main", "Request Sent Successfully");
-            }
-
-            @Override
-            public void onFailure(Call<StopResponse> call, Throwable t) {
-                ((TextView) findViewById(R.id.StopBtn)).setText("Request Failed");
-
-            }
-        });
 
         MessageService Stop2Service = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
         Call<Stop2Response> stop2 = Stop2Service.getStop2();
@@ -286,6 +233,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             break;
+            case R.id.LandBtn:
+                doLand();
+                break;
+
+            case R.id.StopBtn:
+                doStop();
+                break;
+
+            case R.id.TakeOffBtn:
+                doStart();
+                break;
+
             case R.id.DataStreamingBtn: {
                 startActivity(new Intent(MainActivity.this, WaypointActivity.class));
             }
@@ -296,6 +255,117 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             break;
         }
+    }
+
+    private void doLand() {
+        DroneRequest landDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.LAND_COMMAND);
+
+        makeRequest(landDroneRequest);
+    }
+
+    public void makeRequest(DroneRequest droneRequest) {
+        MessageService LandService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<LandResponse> land = LandService.getLand();
+
+        String successMessage = getString(R.string.success_text_message,
+                droneRequest.getCommand(), droneRequest.getItem());
+        String failedMessage = getString(R.string.failure_text_message,
+                droneRequest.getCommand(), droneRequest.getItem());
+
+        land.enqueue(new Callback<LandResponse>() {
+            @Override
+            public void onResponse(Call<LandResponse> land, Response<LandResponse> response) {
+
+                Log.e("main", "Request Sent Successfully");
+                Snackbar.make(findViewById(R.id.videoControlsFrame),
+                        successMessage,
+                        Snackbar.LENGTH_LONG
+                ).show();
+            }
+
+            @Override
+            public void onFailure(Call<LandResponse> land, Throwable t) {
+                Snackbar.make(findViewById(R.id.videoControlsFrame),
+                        failedMessage,
+                        Snackbar.LENGTH_LONG
+                ).show();
+
+            }
+        });
+    }
+
+    private void doStop() {
+        DroneRequest stopDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_COMMAND);
+
+        makeRequest(stopDroneRequest);
+    }
+
+    private void makeRequest(DroneRequest droneRequest) {
+        MessageService StopService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<StopResponse> stop = StopService.getStop();
+
+        String successMessage = getString(R.string.success_text_message,
+                droneRequest.getCommand(), droneRequest.getItem());
+        String failedMessage = getString(R.string.failure_text_message,
+                droneRequest.getCommand(), droneRequest.getItem());
+
+        stop.enqueue(new Callback<StopResponse>() {
+            @Override
+            public void onResponse(Call<StopResponse> stop, Response<StopResponse> response) {
+
+                Log.e("main", "Request Sent Successfully");
+                Snackbar.make(findViewById(R.id.videoControlsFrame),
+                        successMessage,
+                        Snackbar.LENGTH_LONG
+                ).show();
+            }
+
+            @Override
+            public void onFailure(Call<StopResponse> stop, Throwable t) {
+                Snackbar.make(findViewById(R.id.videoControlsFrame),
+                        failedMessage,
+                        Snackbar.LENGTH_LONG
+                ).show();
+
+            }
+        });
+    }
+
+    private void doStart() {
+        DroneRequest startDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_COMMAND);
+
+        makeRequest(startDroneRequest);
+    }
+
+    private void makeRequest(DroneRequest droneRequest) {
+        MessageService StartService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
+        Call<StartResponse> start = StartService.getStart();
+
+        String successMessage = getString(R.string.success_text_message,
+                droneRequest.getCommand(), droneRequest.getItem());
+        String failedMessage = getString(R.string.failure_text_message,
+                droneRequest.getCommand(), droneRequest.getItem());
+
+        start.enqueue(new Callback<StartResponse>() {
+            @Override
+            public void onResponse(Call<StartResponse> start, Response<StartResponse> response) {
+
+                Log.e("main", "Request Sent Successfully");
+                Snackbar.make(findViewById(R.id.videoControlsFrame),
+                        successMessage,
+                        Snackbar.LENGTH_LONG
+                ).show();
+            }
+
+            @Override
+            public void onFailure(Call<StartResponse> start, Throwable t) {
+                Snackbar.make(findViewById(R.id.videoControlsFrame),
+                        failedMessage,
+                        Snackbar.LENGTH_LONG
+                ).show();
+
+            }
+        });
     }
 
 
