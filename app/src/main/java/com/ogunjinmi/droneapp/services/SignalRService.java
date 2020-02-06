@@ -6,6 +6,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 
 import com.microsoft.signalr.Action;
 import com.microsoft.signalr.HubConnection;
@@ -70,26 +71,35 @@ public class SignalRService extends Service {
 
     private void startSignalR() {
 
-        String serverUrl = Utilities.BASE_URL;
+        String serverUrl = Utilities.BASE_URL + "deviceHub";
 
-         mHubConnection = HubConnectionBuilder.create(serverUrl)
-
+        mHubConnection = HubConnectionBuilder.create(serverUrl)
                 .build();
 
         mHubConnection.onClosed(exception -> {
-
+            Log.e("onClosed:", "Command");
+            Log.e("onClosed", "Command "+ exception.getMessage());
         });
 
-        mHubConnection.on("Command", new Action() {
-            @Override
-            public void invoke() {
-                System.out.println("New Message: Command");
-            }
+        mHubConnection.on("ImageMessage", () -> {
+            Log.e("onImageMessage:","Received New Message: Command");
+            Log.e("onImageMessage:","New Message: Command");
         });
 
-        mHubConnection.start();
-        mHubConnection.invoke(DroneRequest.class, "SendCommand", "");
 
+        mHubConnection.on("VideoMessage", () -> {
+            Log.e("onVideoMessage:","Received New Message: Command");
+            Log.e("onVideoMessage:","New Message: Command");
+        });
+
+
+        mHubConnection.start().doOnComplete(() -> {
+            Log.e("doOnComplete:", "Command");
+            mHubConnection.invoke(Void.class, "GetConnectionId");
+
+
+        });
+        
         String HELLO_MSG = "Hello from Android!";
         sendMessage(HELLO_MSG);
     }

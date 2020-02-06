@@ -3,7 +3,6 @@ package com.ogunjinmi.droneapp;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -26,6 +25,7 @@ import com.ogunjinmi.droneapp.model.DroneRequest;
 import com.ogunjinmi.droneapp.model.LandResponse;
 import com.ogunjinmi.droneapp.services.MessageService;
 import com.ogunjinmi.droneapp.services.ServiceBuilder;
+import com.ogunjinmi.droneapp.services.SignalRService;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final int REQ_CODE_SPEECH_INPUT = 12;
     LinearLayout TeleOp, TeleOp1, TeleOp2;
-    Button teleoperationButton, datastreamingButton, mainMenuButton, stopButton, landButton, takeOffButton, startButton, stop2Button, reviewButton;
+    Button teleoperationButton, datastreamingButton, mainMenuButton, stopButton, landButton, takeOffButton, startStreamingButton, stopStreamingButton, reviewStreamsButton;
     ImageButton imageButtonUp, imageButtonDown, imageButtonLeft, imageButtonRight;
     String inputCommand = "";
     private HubConnection mCommandHubConnection;
@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         startSignalR();
         startSignalRForData();
+
+        startService(new Intent(this, SignalRService.class));
 
 
         TeleOp = findViewById(R.id.TeleOperation);
@@ -91,10 +93,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         datastreamingButton = findViewById(R.id.DataStreamingBtn);
         datastreamingButton.setOnClickListener(v -> {
-            startButton.setVisibility(View.VISIBLE);
-            startButton.setClickable(false);
-            stop2Button.setVisibility(View.VISIBLE);
-            reviewButton.setVisibility(View.VISIBLE);
+            startStreamingButton.setVisibility(View.VISIBLE);
+            startStreamingButton.setClickable(false);
+            stopStreamingButton.setVisibility(View.VISIBLE);
+            reviewStreamsButton.setVisibility(View.VISIBLE);
         });
 
         mainMenuButton = findViewById(R.id.MainMenuBtn);
@@ -113,13 +115,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         landButton.setOnClickListener(this);
         takeOffButton = findViewById(R.id.TakeOffBtn);
         takeOffButton.setOnClickListener(this);
-        startButton = findViewById(R.id.StartStreamingBtn);
-        startButton.setOnClickListener(this);
-        startButton.setClickable(true);
-        stop2Button = findViewById(R.id.StopStreamingBtn);
-        stop2Button.setOnClickListener(this);
-        reviewButton = findViewById(R.id.ReviewBtn);
-        reviewButton.setOnClickListener(this);
+        startStreamingButton = findViewById(R.id.StartStreamingBtn);
+        startStreamingButton.setOnClickListener(this);
+        startStreamingButton.setClickable(true);
+        stopStreamingButton = findViewById(R.id.StopStreamingBtn);
+        stopStreamingButton.setOnClickListener(this);
+        reviewStreamsButton = findViewById(R.id.ReviewBtn);
+        reviewStreamsButton.setOnClickListener(this);
         TeleOp.setVisibility(View.GONE);
         TeleOp1.setVisibility(View.GONE);
         TeleOp2.setVisibility(View.GONE);
@@ -127,18 +129,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopButton.setVisibility(View.GONE);
         landButton.setVisibility(View.GONE);
         takeOffButton.setVisibility(View.GONE);
-        startButton.setVisibility(View.GONE);
-        stop2Button.setVisibility(View.GONE);
-        reviewButton.setVisibility(View.GONE);
+        startStreamingButton.setVisibility(View.GONE);
+        stopStreamingButton.setVisibility(View.GONE);
+        reviewStreamsButton.setVisibility(View.GONE);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.DownBtn: {
 
-            }
-            break;
+
             case R.id.TeleOperationBtn: {
                 //TODO show button controls for controlling the drone
 
@@ -156,6 +156,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.TakeOffBtn:
                 doStart();
+                break;
+
+            case R.id.UpBtn:
+                doUp();
+                break;
+
+            case R.id.DownBtn:
+                doDown();
+                break;
+
+            case R.id.LeftBtn:
+                doLeft();
+                break;
+
+            case R.id.RightBtn:
+                doRight();
+                break;
+
+            case R.id.StartStreamingBtn:
+                doStartStreaming();
+                break;
+
+            case R.id.StopStreamingBtn:
+                doStopStreaming();
+                break;
+
+            case R.id.ReviewBtn:
+                doReviewStreams();
                 break;
 
             case R.id.DataStreamingBtn: {
@@ -220,6 +248,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         makeRequest(startDroneRequest);
         sendCommand(startDroneRequest.toString());
     }
+
+    private void doUp() {
+        DroneRequest upDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.UP_COMMAND);
+
+        makeRequest(upDroneRequest);
+        sendCommand(upDroneRequest.toString());
+    }
+    private void doDown() {
+        DroneRequest downDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.DOWN_COMMAND);
+
+        makeRequest(downDroneRequest);
+        sendCommand(downDroneRequest.toString());
+    }
+    private void doLeft() {
+        DroneRequest leftDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.LEFT_COMMAND);
+
+        makeRequest(leftDroneRequest);
+        sendCommand(leftDroneRequest.toString());
+    }
+    private void doRight() {
+        DroneRequest rightDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.RIGHT_COMMAND);
+
+        makeRequest(rightDroneRequest);
+        sendCommand(rightDroneRequest.toString());
+    }
+    private void doStartStreaming() {
+        DroneRequest startStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_STREAMING_COMMAND);
+
+        makeRequest(startStreamingDroneRequest);
+        sendCommand(startStreamingDroneRequest.toString());
+    }
+    private void doStopStreaming() {
+        DroneRequest stopStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_STREAMING_COMMAND);
+
+        makeRequest(stopStreamingDroneRequest);
+        sendCommand(stopStreamingDroneRequest.toString());
+    }
+    private void doReviewStreams() {
+        DroneRequest reviewStreamsDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.REVIEW_STREAMS_COMMAND);
+
+        makeRequest(reviewStreamsDroneRequest);
+        sendCommand(reviewStreamsDroneRequest.toString());
+    }
+
+
 
 
     private void promptSpeechInput() {
@@ -298,13 +371,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         mCommandHubConnection.on("Command", () -> {
-            System.out.println("Received New Message: Command");
-            System.out.println("New Message: Command");
+            Log.e("onCommand", "Received New Message: Command");
+            Log.e("onCommand", "New Message: Command");
         });
 
 
         mCommandHubConnection.start().doOnComplete(() -> {
-            System.out.println("doOnComplete: Command");
+            Log.e("onStart doOnComplete:", "Command");
             mCommandHubConnection.invoke(Void.class, "GetConnectionId");
             DroneRequest stopDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_COMMAND);
             String HELLO_MSG = stopDroneRequest.toString();
@@ -327,14 +400,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         mDataHubConnection.on("ImageMessage", () -> {
-            System.out.println("Received New Message: Command");
-            System.out.println("New Message: Command");
+            Log.e("onImageMessage:","Received New Message: Command");
+            Log.e("onImageMessage:","New Message: Command");
         });
 
 
         mDataHubConnection.on("VideoMessage", () -> {
-            System.out.println("Received New Message: Command");
-            System.out.println("New Message: Command");
+            Log.e("onVideoMessage:","Received New Message: Command");
+            Log.e("onVideoMessage:","New Message: Command");
         });
 
 
