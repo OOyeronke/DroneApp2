@@ -3,6 +3,7 @@ package com.ogunjinmi.droneapp;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -71,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             takeOffButton.setVisibility(View.VISIBLE);
             landButton.setVisibility(View.VISIBLE);
             stopButton.setVisibility(View.VISIBLE);
+            startStreamingButton.setVisibility(View.GONE);
+            stopStreamingButton.setVisibility(View.GONE);
+            reviewStreamsButton.setVisibility(View.GONE);
             datastreamingButton.setText(getString(R.string.text));
             datastreamingButton.setOnClickListener(v1 -> {
                 //TODO: Handle button functionality when text is "Text"
@@ -97,6 +101,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startStreamingButton.setClickable(false);
             stopStreamingButton.setVisibility(View.VISIBLE);
             reviewStreamsButton.setVisibility(View.VISIBLE);
+            TeleOp.setVisibility(View.GONE);
+            TeleOp1.setVisibility(View.GONE);
+            TeleOp2.setVisibility(View.GONE);
+            imageButtonDown.setVisibility(View.GONE);
+            takeOffButton.setVisibility(View.GONE);
+            landButton.setVisibility(View.GONE);
+            stopButton.setVisibility(View.GONE);
         });
 
         mainMenuButton = findViewById(R.id.MainMenuBtn);
@@ -238,7 +249,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void doStop() {
         DroneRequest stopDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_COMMAND);
 
-        sendCommand(stopDroneRequest.toString());
+        makeRequest(stopDroneRequest);
+        //sendCommand(stopDroneRequest.toString());
     }
 
 
@@ -246,50 +258,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DroneRequest startDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_COMMAND);
 
         makeRequest(startDroneRequest);
-        sendCommand(startDroneRequest.toString());
+        //sendCommand(startDroneRequest.toString());
     }
 
     private void doUp() {
         DroneRequest upDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.UP_COMMAND);
 
         makeRequest(upDroneRequest);
-        sendCommand(upDroneRequest.toString());
+        //sendCommand(upDroneRequest.toString());
     }
     private void doDown() {
         DroneRequest downDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.DOWN_COMMAND);
 
         makeRequest(downDroneRequest);
-        sendCommand(downDroneRequest.toString());
+        //sendCommand(downDroneRequest.toString());
     }
     private void doLeft() {
         DroneRequest leftDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.LEFT_COMMAND);
 
         makeRequest(leftDroneRequest);
-        sendCommand(leftDroneRequest.toString());
+        //sendCommand(leftDroneRequest.toString());
     }
     private void doRight() {
         DroneRequest rightDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.RIGHT_COMMAND);
 
         makeRequest(rightDroneRequest);
-        sendCommand(rightDroneRequest.toString());
+        //sendCommand(rightDroneRequest.toString());
     }
     private void doStartStreaming() {
         DroneRequest startStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_STREAMING_COMMAND);
 
         makeRequest(startStreamingDroneRequest);
-        sendCommand(startStreamingDroneRequest.toString());
+        //sendCommand(startStreamingDroneRequest.toString());
     }
     private void doStopStreaming() {
         DroneRequest stopStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_STREAMING_COMMAND);
 
         makeRequest(stopStreamingDroneRequest);
-        sendCommand(stopStreamingDroneRequest.toString());
+        //sendCommand(stopStreamingDroneRequest.toString());
     }
     private void doReviewStreams() {
         DroneRequest reviewStreamsDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.REVIEW_STREAMS_COMMAND);
 
         makeRequest(reviewStreamsDroneRequest);
-        sendCommand(reviewStreamsDroneRequest.toString());
+        //sendCommand(reviewStreamsDroneRequest.toString());
     }
 
 
@@ -359,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @SuppressLint("CheckResult")
     private void startSignalR() {
-
+        Log.e("activity", "startSignalRForData");
         String serverUrl = Utilities.BASE_URL + "commandHub";
 
         mCommandHubConnection = HubConnectionBuilder.create(serverUrl)
@@ -373,6 +385,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mCommandHubConnection.on("Command", () -> {
             Log.e("onCommand", "Received New Message: Command");
             Log.e("onCommand", "New Message: Command");
+        });
+        mCommandHubConnection.on("ImageStream", () -> {
+            Log.e("onImageMessage:","Received New Message: Command");
+            Log.e("onImageMessage:","New Message: Command");
         });
 
 
@@ -390,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void startSignalRForData() {
 
         String serverUrl = Utilities.BASE_URL + "deviceHub";
-
+        Log.e("activity", "startSignalRForData");
         mDataHubConnection = HubConnectionBuilder.create(serverUrl)
                 .build();
 
