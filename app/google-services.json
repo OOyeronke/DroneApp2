@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "280699064344",
+    "firebase_url": "https://droneapp2.firebaseio.com",
+    "project_id": "droneapp2",
+    "storage_bucket": "droneapp2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280699064344:android:1bcd4b7236954baba5f36d",
+        "android_client_info": {
+          "package_name": "com.ogunjinmi.DroneApp2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "280699064344-8bb85r7fatfbrd2m30bpa9de1hdn4ct6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3pq87afbfSMk2DKHwm0Gs7AC0hTZd0No"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "280699064344-8bb85r7fatfbrd2m30bpa9de1hdn4ct6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
