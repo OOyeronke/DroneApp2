@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:280699064344:android:1bcd4b7236954baba5f36d",
+        "mobilesdk_app_id": "1:280699064344:android:11cc55532d284e22a5f36d",
         "android_client_info": {
-          "package_name": "com.ogunjinmi.DroneApp2"
+          "package_name": "com.ogunjinmi.droneapp"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "280699064344-cc022p349mamjiisn8rbel5nq93234gv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ogunjinmi.droneapp",
+            "certificate_hash": "28b8f89fa8e1d13c29bc8904b873cddd535e125f"
+          }
+        },
         {
           "client_id": "280699064344-8bb85r7fatfbrd2m30bpa9de1hdn4ct6.apps.googleusercontent.com",
           "client_type": 3

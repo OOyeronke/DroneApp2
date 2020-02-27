@@ -15,7 +15,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 import com.ogunjinmi.droneapp.model.DroneRequest;
@@ -255,44 +258,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         makeRequest(upDroneRequest);
         sendCommand(upDroneRequest.toString());
     }
+
     private void doDown() {
         DroneRequest downDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.DOWN_COMMAND);
 
         makeRequest(downDroneRequest);
         sendCommand(downDroneRequest.toString());
     }
+
     private void doLeft() {
         DroneRequest leftDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.LEFT_COMMAND);
 
         makeRequest(leftDroneRequest);
         sendCommand(leftDroneRequest.toString());
     }
+
     private void doRight() {
         DroneRequest rightDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.RIGHT_COMMAND);
 
         makeRequest(rightDroneRequest);
         sendCommand(rightDroneRequest.toString());
     }
+
     private void doStartStreaming() {
         DroneRequest startStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_STREAMING_COMMAND);
 
         makeRequest(startStreamingDroneRequest);
         sendCommand(startStreamingDroneRequest.toString());
     }
+
     private void doStopStreaming() {
         DroneRequest stopStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_STREAMING_COMMAND);
 
         makeRequest(stopStreamingDroneRequest);
         sendCommand(stopStreamingDroneRequest.toString());
     }
+
     private void doReviewStreams() {
         DroneRequest reviewStreamsDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.REVIEW_STREAMS_COMMAND);
 
         makeRequest(reviewStreamsDroneRequest);
         sendCommand(reviewStreamsDroneRequest.toString());
     }
-
-
 
 
     private void promptSpeechInput() {
@@ -367,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mCommandHubConnection.onClosed(exception -> {
             Log.e("onClosed:", "Command");
-            Log.e("onClosed", "Command "+ exception.getMessage());
+            Log.e("onClosed", "Command " + exception.getMessage());
         });
 
         mCommandHubConnection.on("Command", () -> {
@@ -396,18 +403,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mDataHubConnection.onClosed(exception -> {
             Log.e("onClosed:", "Command");
-            Log.e("onClosed", "Command "+ exception.getMessage());
+            Log.e("onClosed", "Command " + exception.getMessage());
         });
 
         mDataHubConnection.on("ImageMessage", () -> {
-            Log.e("onImageMessage:","Received New Message: Command");
-            Log.e("onImageMessage:","New Message: Command");
+            Log.e("onImageMessage:", "Received New Message: Command");
+            Log.e("onImageMessage:", "New Message: Command");
         });
 
 
         mDataHubConnection.on("VideoMessage", () -> {
-            Log.e("onVideoMessage:","Received New Message: Command");
-            Log.e("onVideoMessage:","New Message: Command");
+            Log.e("onVideoMessage:", "Received New Message: Command");
+            Log.e("onVideoMessage:", "New Message: Command");
         });
 
 
@@ -422,6 +429,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void sendCommand(String message) {
         String SERVER_METHOD_SEND = "SendCommand";
         mCommandHubConnection.send(SERVER_METHOD_SEND, message);
+    }
+FirebaseInstanceId.getInstance().
+
+    getInstanceId().
+
+    addOnSuccessListener(MainActivity.this,  new OnSuccessListener<InstanceIdResult>() {
+        @Override
+        public void onSuccess (InstanceIdResult instanceIdResult){
+            String newToken = instanceIdResult.getToken();
+            Log.e("newToken", newToken);
+
+        }
     }
 
     }
