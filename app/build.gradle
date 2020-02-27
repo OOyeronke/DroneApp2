@@ -46,28 +46,28 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
     implementation 'org.conscrypt:conscrypt-android:2.2.1'
 
-    apply plugin: 'com.android.application'
-// Add the following line:
-    apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
-    android {
-        // ...
-    }
-    dependencies {
-        // ...
-
-        // Add the Firebase SDK for Google Analytics
-        implementation 'com.google.firebase:firebase-analytics:17.2.2'
-
-        // Add the SDKs for any other Firebase products you want to use in your app
-        // For example, to use Firebase Authentication and Cloud Firestore
-        implementation 'com.google.firebase:firebase-auth:19.2.0'
-        implementation 'com.google.firebase:firebase-firestore:21.4.0'
-
-        // Getting a "Could not find" error? Make sure that you've added
-        // Google's Maven repository to your root-level build.gradle file
-            }
-    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
+}
+apply plugin: 'com.android.application'
+// Add the following line:
+apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
+android {
+    // ...
+}
+dependencies {
+    // ...
+
+    // Add the Firebase SDK for Google Analytics
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+
+    // Add the SDKs for any other Firebase products you want to use in your app
+    // For example, to use Firebase Authentication and Cloud Firestore
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
+    implementation 'com.google.firebase:firebase-firestore:21.4.0'
+
+    // Getting a "Could not find" error? Make sure that you've added
+    // Google's Maven repository to your root-level build.gradle file
 }

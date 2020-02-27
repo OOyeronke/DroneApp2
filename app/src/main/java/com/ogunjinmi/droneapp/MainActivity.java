@@ -15,10 +15,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 import com.ogunjinmi.droneapp.model.DroneRequest;
@@ -430,18 +427,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String SERVER_METHOD_SEND = "SendCommand";
         mCommandHubConnection.send(SERVER_METHOD_SEND, message);
     }
-FirebaseInstanceId.getInstance().
 
-    getInstanceId().
-
-    addOnSuccessListener(MainActivity.this,  new OnSuccessListener<InstanceIdResult>() {
-        @Override
-        public void onSuccess (InstanceIdResult instanceIdResult){
-            String newToken = instanceIdResult.getToken();
-            Log.e("newToken", newToken);
-
-        }
-    }
-
-    }
+       }
 
