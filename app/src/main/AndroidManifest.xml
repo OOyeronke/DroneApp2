@@ -23,6 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".StreamingActivity"></activity>
         <activity
             android:name=".SplashedActivity"
             android:screenOrientation="landscape">
@@ -49,11 +50,12 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
-        <service android:name=".services.SignalRService"
+        <service
+            android:name=".services.SignalRService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
     </application>
 
 </manifest>

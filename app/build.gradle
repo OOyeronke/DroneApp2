@@ -41,11 +41,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
     implementation 'com.squareup.okhttp3:okhttp:4.2.2'
 
-    implementation 'com.microsoft.signalr:signalr:1.0.0'
-    implementation 'com.microsoft.signalr:signalr:3.0.0-preview3-19153-02'
+    implementation 'com.smartarmenia:dotnetcoresignalrclientjava:1.14'
 
-
-    //implementation 'org.slf4j:slf4j-jdk14:1.7.25'
+    implementation 'org.slf4j:slf4j-jdk14:1.7.25'
 
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
     implementation 'org.conscrypt:conscrypt-android:2.2.1'

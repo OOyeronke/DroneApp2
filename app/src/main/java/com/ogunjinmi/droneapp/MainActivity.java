@@ -1,10 +1,9 @@
 package com.ogunjinmi.droneapp;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
@@ -17,16 +16,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.microsoft.signalr.HubConnection;
-import com.microsoft.signalr.HubConnectionBuilder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.ogunjinmi.droneapp.model.Command;
 import com.ogunjinmi.droneapp.model.DroneRequest;
+import com.ogunjinmi.droneapp.model.ImageMessage;
 import com.ogunjinmi.droneapp.model.LandResponse;
+import com.ogunjinmi.droneapp.model.Location;
 import com.ogunjinmi.droneapp.services.MessageService;
 import com.ogunjinmi.droneapp.services.ServiceBuilder;
-import com.ogunjinmi.droneapp.services.SignalRService;
+import com.ogunjinmi.droneapp.utils.Constants;
+import com.ogunjinmi.droneapp.utils.Utilities;
+import com.smartarmenia.dotnetcoresignalrclientjava.HubConnection;
+import com.smartarmenia.dotnetcoresignalrclientjava.HubConnectionListener;
+import com.smartarmenia.dotnetcoresignalrclientjava.HubMessage;
+import com.smartarmenia.dotnetcoresignalrclientjava.WebSocketHubConnectionP2;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -35,7 +44,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.ogunjinmi.droneapp.Utilities.verifyInputCommand;
+import static com.ogunjinmi.droneapp.utils.Constants.COMMAND_HUB_URL;
+import static com.ogunjinmi.droneapp.utils.Constants.DEVICE_HUB_URL;
+import static com.ogunjinmi.droneapp.utils.Utilities.verifyInputCommand;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -45,8 +56,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button teleoperationButton, datastreamingButton, mainMenuButton, stopButton, landButton, takeOffButton, startStreamingButton, stopStreamingButton, reviewStreamsButton;
     ImageButton imageButtonUp, imageButtonDown, imageButtonLeft, imageButtonRight;
     String inputCommand = "";
-    private HubConnection mCommandHubConnection;
-    private HubConnection mDataHubConnection;
+    private Bitmap bitmap;
+    private ImageView imageView;
 
 
     @Override
@@ -55,10 +66,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         startSignalR();
-        startSignalRForData();
+        startSignalRForCommands();
 
-        startService(new Intent(this, SignalRService.class));
 
+        imageView = findViewById(R.id.imageView);
 
         TeleOp = findViewById(R.id.TeleOperation);
         TeleOp1 = findViewById(R.id.TeleButton1);
@@ -286,13 +297,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //sendCommand(rightDroneRequest.toString());
     }
     private void doStartStreaming() {
-        DroneRequest startStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_STREAMING_COMMAND);
+        DroneRequest startStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_COMMAND);
 
         makeRequest(startStreamingDroneRequest);
         //sendCommand(startStreamingDroneRequest.toString());
     }
     private void doStopStreaming() {
-        DroneRequest stopStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_STREAMING_COMMAND);
+        DroneRequest stopStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_COMMAND);
 
         makeRequest(stopStreamingDroneRequest);
         //sendCommand(stopStreamingDroneRequest.toString());
@@ -369,76 +380,113 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @SuppressLint("CheckResult")
     private void startSignalR() {
-        Log.e("activity", "startSignalRForData");
-        String serverUrl = Utilities.BASE_URL + "commandHub";
+        final HubConnection connection =
+                new WebSocketHubConnectionP2(
+                        DEVICE_HUB_URL,
+                        "Bearer your_token");
 
-        mCommandHubConnection = HubConnectionBuilder.create(serverUrl)
-                .build();
+        connection.addListener(new HubConnectionListener() {
+            @Override
+            public void onConnected() {
+                Log.e("SPlash", "onConnected");
+            }
 
-        mCommandHubConnection.onClosed(exception -> {
-            Log.e("onClosed:", "Command");
-            Log.e("onClosed", "Command "+ exception.getMessage());
+            @Override
+            public void onDisconnected() {
+                Log.e("SPlash", "onDisconnected ");
+            }
+
+            @Override
+            public void onMessage(HubMessage message) {
+                Log.e("SPlash", "onMessage message is "+message.getTarget());
+            }
+
+            @Override
+            public void onError(Exception exception) {
+                Log.e("SPlash", "onError message is "+exception.getMessage());
+            }
+        });
+        connection.subscribeToEvent("ImageStream", this::handleStream);
+        connection.subscribeToEvent("ImageMessage", this::handleImages);
+        connection.subscribeToEvent("LocationMessage", this::handleLocations);
+        connection.connect();
+    }
+
+    private void startSignalRForCommands() {
+
+        final HubConnection commandConnection =
+                new WebSocketHubConnectionP2(
+                        COMMAND_HUB_URL,
+                        "Bearer your_token");
+
+        commandConnection.addListener(new HubConnectionListener() {
+            @Override
+            public void onConnected() {
+                Log.e("SPlash", "commandConnection onConnected");
+            }
+
+            @Override
+            public void onDisconnected() {
+                Log.e("SPlash", "onDisconnected ");
+            }
+
+            @Override
+            public void onMessage(HubMessage message) {
+                Log.e("SPlash", "onMessage message is "+message.getInvocationId());
+                Log.e("SPlash", "onMessage message is "+message.toString());
+                JsonElement[] messageArguments = message.getArguments();
+                Log.e("SPlash", "onMessage message is "+ messageArguments[0]);
+
+            }
+
+            @Override
+            public void onError(Exception exception) {
+                Log.e("SPlash", "onError message is "+exception.getMessage());
+            }
         });
 
-        mCommandHubConnection.on("Command", () -> {
-            Log.e("onCommand", "Received New Message: Command");
-            Log.e("onCommand", "New Message: Command");
-        });
-        mCommandHubConnection.on("ImageStream", () -> {
-            Log.e("onImageMessage:","Received New Message: Command");
-            Log.e("onImageMessage:","New Message: Command");
-        });
 
+        commandConnection.subscribeToEvent("SendCommand", this::handleCommand);
 
-        mCommandHubConnection.start().doOnComplete(() -> {
-            Log.e("onStart doOnComplete:", "Command");
-            mCommandHubConnection.invoke(Void.class, "GetConnectionId");
-            DroneRequest stopDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_COMMAND);
-            String HELLO_MSG = stopDroneRequest.toString();
-            sendCommand(HELLO_MSG);
+        commandConnection.connect();
+    }
 
+    private void handleCommand(HubMessage message) {
+        JsonElement[] messageArguments = message.getArguments();
+        JsonElement messageArgument = messageArguments[0];
+        Gson gson = new GsonBuilder().create();
+        Command command = gson.fromJson(messageArgument, Command.class);
+
+        Log.e("SPlash", "subscribeToEvent command is "+ command.getCommand());
+    }
+
+    private void handleStream(HubMessage message) {
+        JsonElement[] messageArguments = message.getArguments();
+        JsonElement messageArgument = messageArguments[0];
+
+        String imageString = messageArgument.getAsString();
+
+        runOnUiThread(() -> {
+            bitmap = Utilities.convertFromBase64(imageString);
+            Log.e("Main", "image is "+bitmap);
+            imageView.setImageBitmap(bitmap);
         });
     }
 
-    @SuppressLint("CheckResult")
-    private void startSignalRForData() {
+    private void handleImages(HubMessage message) {
+        JsonElement[] messageArguments = message.getArguments();
+        JsonElement messageArgument = messageArguments[0];
 
-        String serverUrl = Utilities.BASE_URL + "deviceHub";
-        Log.e("activity", "startSignalRForData");
-        mDataHubConnection = HubConnectionBuilder.create(serverUrl)
-                .build();
-
-        mDataHubConnection.onClosed(exception -> {
-            Log.e("onClosed:", "Command");
-            Log.e("onClosed", "Command "+ exception.getMessage());
-        });
-
-        mDataHubConnection.on("ImageMessage", () -> {
-            Log.e("onImageMessage:","Received New Message: Command");
-            Log.e("onImageMessage:","New Message: Command");
-        });
-
-
-        mDataHubConnection.on("VideoMessage", () -> {
-            Log.e("onVideoMessage:","Received New Message: Command");
-            Log.e("onVideoMessage:","New Message: Command");
-        });
-
-
-        mDataHubConnection.start().doOnComplete(() -> {
-            System.out.println("doOnComplete: Command");
-            mDataHubConnection.invoke(Void.class, "GetConnectionId");
-
-
-        });
+        Gson gson = new GsonBuilder().create();
+        ImageMessage imageMessage = gson.fromJson(messageArgument, ImageMessage.class);
     }
 
-    public void sendCommand(String message) {
-        String SERVER_METHOD_SEND = "SendCommand";
-        mCommandHubConnection.send(SERVER_METHOD_SEND, message);
+    private void handleLocations(HubMessage hubMessage) {
+        JsonElement[] messageArguments = hubMessage.getArguments();
+        JsonElement messageArgument = messageArguments[0];
+        Gson gson = new GsonBuilder().create();
+        Location location = gson.fromJson(messageArgument, Location.class);
     }
-
 }
 

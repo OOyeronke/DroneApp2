@@ -1,4 +1,4 @@
-package com.ogunjinmi.droneapp;
+package com.ogunjinmi.droneapp.utils;
 
 public class Constants {
 
@@ -28,6 +28,9 @@ public class Constants {
     public static final String START_STREAMING_COMMAND = "start_streaming";
     public static final String STOP_STREAMING_COMMAND = "stop_streaming";
     public static final String REVIEW_STREAMS_COMMAND = "review_streams";
+
+    public static final String COMMAND_HUB_URL = "https://deepbuzz-project.azurewebsites.net/commandHub";
+    public static final String DEVICE_HUB_URL = "https://deepbuzz-project.azurewebsites.net/deviceHub";
 
 
 

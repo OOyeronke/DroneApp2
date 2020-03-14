@@ -1,3 +1,4 @@
+/*
 package com.ogunjinmi.droneapp.services;
 
 import android.app.IntentService;
@@ -16,7 +17,7 @@ import com.microsoft.signalr.HubConnectionBuilder;
 import com.microsoft.signalr.HubConnectionState;
 import com.microsoft.signalr.OnClosedCallback;
 import com.microsoft.signalr.TransportEnum;
-import com.ogunjinmi.droneapp.Utilities;
+import com.ogunjinmi.droneapp.utils.Utilities;
 import com.ogunjinmi.droneapp.model.DroneRequest;
 
 
@@ -52,12 +53,14 @@ public class SignalRService extends Service {
         // Return the communication channel to the service.
         startSignalR();
         return mBinder;
-    }
+    }*/
 
-    /**
+
+/**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
-     */
+     *//*
+
     public class LocalBinder extends Binder {
         public SignalRService getService() {
             // Return this instance of SignalRService so clients can call public methods
@@ -65,9 +68,11 @@ public class SignalRService extends Service {
         }
     }
 
-    /**
+    */
+/**
      * method for clients (activities)
-     */
+     *//*
+
     public void sendMessage(String message) {
         String SERVER_METHOD_SEND = "SendCommand";
         //mHubConnection.invoke(Void.class, "GetConnectionId");
@@ -112,4 +117,4 @@ public class SignalRService extends Service {
 
         });
     }
-}
+}*/

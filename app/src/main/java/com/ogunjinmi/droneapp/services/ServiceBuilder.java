@@ -3,7 +3,7 @@ package com.ogunjinmi.droneapp.services;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.ogunjinmi.droneapp.Utilities.BASE_URL;
+import static com.ogunjinmi.droneapp.utils.Utilities.BASE_URL;
 
 public class ServiceBuilder {
 
