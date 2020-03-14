@@ -278,44 +278,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         makeRequest(upDroneRequest);
         //sendCommand(upDroneRequest.toString());
     }
+
     private void doDown() {
         DroneRequest downDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.DOWN_COMMAND);
 
         makeRequest(downDroneRequest);
         //sendCommand(downDroneRequest.toString());
     }
+
     private void doLeft() {
         DroneRequest leftDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.LEFT_COMMAND);
 
         makeRequest(leftDroneRequest);
         //sendCommand(leftDroneRequest.toString());
     }
+
     private void doRight() {
         DroneRequest rightDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.RIGHT_COMMAND);
 
         makeRequest(rightDroneRequest);
         //sendCommand(rightDroneRequest.toString());
     }
+
     private void doStartStreaming() {
         DroneRequest startStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_COMMAND);
 
         makeRequest(startStreamingDroneRequest);
         //sendCommand(startStreamingDroneRequest.toString());
     }
+
     private void doStopStreaming() {
         DroneRequest stopStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_COMMAND);
 
         makeRequest(stopStreamingDroneRequest);
         //sendCommand(stopStreamingDroneRequest.toString());
     }
+
     private void doReviewStreams() {
         DroneRequest reviewStreamsDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.REVIEW_STREAMS_COMMAND);
 
         makeRequest(reviewStreamsDroneRequest);
         //sendCommand(reviewStreamsDroneRequest.toString());
     }
-
-
 
 
     private void promptSpeechInput() {

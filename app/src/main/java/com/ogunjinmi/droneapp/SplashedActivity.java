@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class SplashedActivity extends AppCompatActivity {
 
     @Override
