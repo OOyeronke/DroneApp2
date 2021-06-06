@@ -18,7 +18,7 @@ public class Constants {
     public static final String IMAGES = "camera";
 
 
-    public static final String START_COMMAND = "start";
+    public static final String START_COMMAND = "startCamera";
     public static final String STOP_COMMAND = "stop";
     public static final String LAND_COMMAND = "land";
     public static final String UP_COMMAND = "up";

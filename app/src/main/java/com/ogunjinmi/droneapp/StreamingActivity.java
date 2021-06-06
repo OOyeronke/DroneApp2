@@ -2,10 +2,11 @@ package com.ogunjinmi.droneapp;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonElement;
 import com.ogunjinmi.droneapp.utils.Utilities;

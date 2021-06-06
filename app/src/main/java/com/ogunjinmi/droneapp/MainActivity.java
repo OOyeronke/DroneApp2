@@ -6,10 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +16,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Bitmap bitmap;
     private ImageView imageView;
 
+    HubConnection commandConnection, connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         });
 
-
         datastreamingButton = findViewById(R.id.DataStreamingBtn);
         datastreamingButton.setOnClickListener(v -> {
             startStreamingButton.setVisibility(View.VISIBLE);
@@ -138,10 +139,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         takeOffButton = findViewById(R.id.TakeOffBtn);
         takeOffButton.setOnClickListener(this);
         startStreamingButton = findViewById(R.id.StartStreamingBtn);
-        startStreamingButton.setOnClickListener(this);
+        //startStreamingButton.setOnClickListener(this);
         startStreamingButton.setClickable(true);
         stopStreamingButton = findViewById(R.id.StopStreamingBtn);
-        stopStreamingButton.setOnClickListener(this);
+        //stopStreamingButton.setOnClickListener(this);
         reviewStreamsButton = findViewById(R.id.ReviewBtn);
         reviewStreamsButton.setOnClickListener(this);
         TeleOp.setVisibility(View.GONE);
@@ -154,27 +155,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startStreamingButton.setVisibility(View.GONE);
         stopStreamingButton.setVisibility(View.GONE);
         reviewStreamsButton.setVisibility(View.GONE);
+
+        startStreamingButton.setOnClickListener(view -> doStartStreaming());
+        stopStreamingButton.setOnClickListener(view -> stopConnection());
+        landButton.setOnClickListener(view -> doLand());
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
-
-            case R.id.TeleOperationBtn: {
-                //TODO show button controls for controlling the drone
-
-                //startActivity(new Intent(MainActivity.this, TeleOperationActivity.class));
-            }
-
-            break;
-            case R.id.LandBtn:
-                doLand();
-                break;
-
-            case R.id.StopBtn:
-                doStop();
-                break;
 
             case R.id.TakeOffBtn:
                 doStart();
@@ -196,14 +185,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 doRight();
                 break;
 
-            case R.id.StartStreamingBtn:
-                doStartStreaming();
-                break;
-
-            case R.id.StopStreamingBtn:
-                doStopStreaming();
-                break;
-
             case R.id.ReviewBtn:
                 doReviewStreams();
                 break;
@@ -214,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             break;
             case R.id.MainMenuBtn: {
-                startActivity(new Intent(MainActivity.this, MainActivity.class));
+//                startActivity(new Intent(MainActivity.this, MainActivity.class));
             }
             break;
         }
@@ -228,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void makeRequest(DroneRequest droneRequest) {
         MessageService LandService = ServiceBuilder.getRetrofitInstance().create(MessageService.class);
-        Call<LandResponse> land = LandService.getLand();
+        Call<LandResponse> land = LandService.sendCommand(droneRequest.getCommand());
 
         String successMessage = getString(R.string.success_text_message,
                 droneRequest.getCommand(), droneRequest.getItem());
@@ -269,14 +250,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DroneRequest startDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_COMMAND);
 
         makeRequest(startDroneRequest);
-        //sendCommand(startDroneRequest.toString());
     }
 
     private void doUp() {
         DroneRequest upDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.UP_COMMAND);
 
         makeRequest(upDroneRequest);
-        //sendCommand(upDroneRequest.toString());
     }
 
     private void doDown() {
@@ -301,24 +280,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void doStartStreaming() {
-        DroneRequest startStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.START_COMMAND);
+        startConnection();
+        DroneRequest startStreamingDroneRequest =
+                new DroneRequest(Constants.DRONE_ID, Constants.START_COMMAND);
 
         makeRequest(startStreamingDroneRequest);
-        //sendCommand(startStreamingDroneRequest.toString());
     }
 
     private void doStopStreaming() {
+        stopConnection();
         DroneRequest stopStreamingDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.STOP_COMMAND);
 
         makeRequest(stopStreamingDroneRequest);
-        //sendCommand(stopStreamingDroneRequest.toString());
     }
 
     private void doReviewStreams() {
         DroneRequest reviewStreamsDroneRequest = new DroneRequest(Constants.DRONE_ID, Constants.REVIEW_STREAMS_COMMAND);
 
         makeRequest(reviewStreamsDroneRequest);
-        //sendCommand(reviewStreamsDroneRequest.toString());
     }
 
 
@@ -385,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startSignalR() {
-        final HubConnection connection =
+         connection =
                 new WebSocketHubConnectionP2(
                         DEVICE_HUB_URL,
                         "Bearer your_token");
@@ -393,22 +372,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         connection.addListener(new HubConnectionListener() {
             @Override
             public void onConnected() {
-                Log.e("SPlash", "onConnected");
+                Log.e("MainActivity", "onConnected");
             }
 
             @Override
             public void onDisconnected() {
-                Log.e("SPlash", "onDisconnected ");
+                Log.e("MainActivity", "onDisconnected ");
             }
 
             @Override
             public void onMessage(HubMessage message) {
-                Log.e("SPlash", "onMessage message is "+message.getTarget());
+                Log.e("MainActivity", "onMessage message is "+message.getTarget());
             }
 
             @Override
             public void onError(Exception exception) {
-                Log.e("SPlash", "onError message is "+exception.getMessage());
+                Log.e("MainActivity", "onError message is "+exception.getMessage());
             }
         });
         connection.subscribeToEvent("ImageStream", this::handleStream);
@@ -419,34 +398,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void startSignalRForCommands() {
 
-        final HubConnection commandConnection =
-                new WebSocketHubConnectionP2(
-                        COMMAND_HUB_URL,
-                        "Bearer your_token");
+        commandConnection = new WebSocketHubConnectionP2(
+                COMMAND_HUB_URL,
+                "Bearer your_token");
 
         commandConnection.addListener(new HubConnectionListener() {
             @Override
             public void onConnected() {
-                Log.e("SPlash", "commandConnection onConnected");
+                Log.e("MainActivity", "commandConnection onConnected");
             }
 
             @Override
             public void onDisconnected() {
-                Log.e("SPlash", "onDisconnected ");
+                Log.e("MainActivity", "onDisconnected command");
             }
 
             @Override
             public void onMessage(HubMessage message) {
-                Log.e("SPlash", "onMessage message is "+message.getInvocationId());
-                Log.e("SPlash", "onMessage message is "+message.toString());
+                Log.e("MainActivity", "onMessage message is "+message.getInvocationId());
+                Log.e("MainActivity", "onMessage message is "+message.toString());
                 JsonElement[] messageArguments = message.getArguments();
-                Log.e("SPlash", "onMessage message is "+ messageArguments[0]);
+                Log.e("MainActivity", "onMessage message is "+ messageArguments[0]);
 
             }
 
             @Override
             public void onError(Exception exception) {
-                Log.e("SPlash", "onError message is "+exception.getMessage());
+                Log.e("MainActivity", "onError message is "+exception.getMessage());
             }
         });
 
@@ -462,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Gson gson = new GsonBuilder().create();
         Command command = gson.fromJson(messageArgument, Command.class);
 
-        Log.e("SPlash", "subscribeToEvent command is "+ command.getCommand());
+        Log.e("MainActivity", "subscribeToEvent command is "+ command.getCommand());
     }
 
     private void handleStream(HubMessage message) {
@@ -491,6 +469,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         JsonElement messageArgument = messageArguments[0];
         Gson gson = new GsonBuilder().create();
         Location location = gson.fromJson(messageArgument, Location.class);
+    }
+
+    public void startConnection(){
+        connection.connect();
+        commandConnection.connect();
+    }
+
+    public void stopConnection(){
+        connection.disconnect();
+        commandConnection.disconnect();
     }
 }
 
